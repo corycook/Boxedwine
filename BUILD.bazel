@@ -1,7 +1,7 @@
 # Add rules here to build your software
 # See https://docs.bazel.build/versions/master/build-ref.html#BUILD_files
 
-load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake", "make")
 
 _OUT_BINARIES = [
     "cpspc",
@@ -34,4 +34,14 @@ cmake(
     out_include_dir = "include",
     out_lib_dir = "lib",
     out_shared_libs = _OUT_SHARED_LIBRARIES,
+)
+
+make(
+    name = "glew",
+    lib_source = "@glew//:all_srcs",
+)
+
+cc_library(
+    name = "imgui",
+    deps = ["@imgui//:imgui"],
 )

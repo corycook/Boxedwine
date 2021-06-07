@@ -8,14 +8,18 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
 def fetch_dependencies():
-    http_archive(
+    """Define sources for external dependencies.
+    """
+    maybe(
+        http_archive,
         name = "build_bazel_rules_nodejs",
         sha256 = "10f534e1c80f795cffe1f2822becd4897754d18564612510c59b3c73544ae7c6",
         urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.5.0/rules_nodejs-3.5.0.tar.gz"],
     )
 
     # rules_nodejs doesn't depend on skylib, but it's a useful dependency anyway.
-    http_archive(
+    maybe(
+        http_archive,
         name = "bazel_skylib",
         urls = [
             "https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.3/bazel-skylib-1.0.3.tar.gz",
@@ -76,4 +80,29 @@ filegroup(
         sha256 = "99fbc24a5f4256d866ad7fa625f02df82893920151d8cdf2dc3252186b619f99",
         strip_prefix = "poco-poco-1.10.1-release",
         url = "https://github.com/pocoproject/poco/archive/refs/tags/poco-1.10.1-release.zip",
+    )
+
+    maybe(
+        http_archive,
+        name = "glew",
+        build_file_content = _ALL_CONTENT,
+        sha256 = "a9046a913774395a095edcc0b0ac2d81c3aacca61787b39839b941e9be14e0d4",
+        strip_prefix = "glew-2.2.0",
+        url = "https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip",
+    )
+
+    maybe(
+        http_archive,
+        name = "imgui",
+        build_file_content = """
+cc_library(
+    name = "imgui",
+    srcs = glob(["*.h", "*.cpp"]),
+    hdrs = glob(["imgui.h"]),
+    visibility = ["//visibility:public"],
+)
+        """,
+        sha256 = "56db0e98f4b828396391366b694049d38478562b98b8e29f6cef3b56cd8029d5",
+        strip_prefix = "imgui-1.83",
+        url = "https://github.com/ocornut/imgui/archive/refs/tags/v1.83.zip",
     )
